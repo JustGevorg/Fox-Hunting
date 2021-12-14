@@ -2,7 +2,7 @@
 
 % Making foxes coordinates's list
 random_list(N, T, L) :-
-    findall([X,Y], (between(1,N,_), random(0, T, X), random(0, T, Y)), L).
+    findall([X,Y], (between(1,N,_), random(1, T, X), random(1, T, Y)), L).
 
 % Checking foxes at horizontal and vertical
 vert_catch([V, _], [V, _], _) :- writeln("Fox on horizontal").
@@ -78,6 +78,17 @@ fox_iteration([V, H], [FirstFox|OtherFoxes], Size, Answer) :-
     catching([V,H], FirstFox, Size) -> fox_iteration([V, H], OtherFoxes, Size, NextAnswer), Answer is NextAnswer+1;
     fox_iteration([V, H], OtherFoxes, Size, Answer).
 
+% Remove ONLY first appear element
+remover( _, [], []) :- !.
+remover( R, [R|T], T).
+remover( R, [H|T], [H|T2]) :- H \= R, remover( R, T, T2).
+
+% Remove all element appears
+%remover( _, [], []).
+%remover( R, [R|T], T2) :- remover( R, T, T2).
+%remover( R, [H|T], [H|T2]) :- H \= R, remover( R, T, T2)
+
+
 % Here must be predicate to define catched fox
 %fox_right_here(_, [], _, 0) :- !.
 %fox_right_here([V, H], [FirstFox|OtherFoxes], Size, Answer) :- 
@@ -93,10 +104,19 @@ start :-
     write("Enter count of foxes: "), nl, 
     read(Foxes),
     random_list(Foxes, FieldSize, ListOfFoxes),
-    writeln(ListOfFoxes),
     repeat,
+        writeln(ListOfFoxes),
         writeln("Enter hunter position [V, H]"),
         read(HunterPosition), nl,
-        (false ->
-        writeln(HunterPosition),
-        fail).
+        remover(HunterPosition, ListOfFoxes, Res),
+        Res == ListOfFoxes -> writeln("There is no fox here"),
+        fox_iteration(HunterPosition, ListOfFoxes, FieldSize, Answer),
+        writeln("At vertical, horizontal and diagonal we have so many foxes:"),
+        writeln(Answer);
+        Res \= ListOfFoxes ->
+        ListOfFoxes = Res,
+        writeln("Fox Catched"),
+        (Res == [] ->
+        writeln("Congratz, all foxes catched"),
+        fail;
+        writeln("Lets'go again"), !).
