@@ -83,19 +83,6 @@ remover( _, [], []) :- !.
 remover( R, [R|T], T) :- !.
 remover( R, [H|T], [H|T2]) :- H \= R, remover( R, T, T2).
 
-% Remove all element appears
-%remover( _, [], []).
-%remover( R, [R|T], T2) :- remover( R, T, T2).
-%remover( R, [H|T], [H|T2]) :- H \= R, remover( R, T, T2)
-
-
-% Here must be predicate to define catched fox
-%fox_right_here(_, [], _, 0) :- !.
-%fox_right_here([V, H], [FirstFox|OtherFoxes], Size, Answer) :- 
-%    fox_here([V,H], FirstFox, Param) -> ;
-%    fox_right_here([V, H], OtherFoxes, Size, Answer).
-
-%tttt(Hunter, [H1|T1]) :- fox_here(Hunter, H1)
 
 % Start of the game
 start :- 
@@ -105,41 +92,21 @@ start :-
     read(Foxes),
     random_list(Foxes, FieldSize, ListOfFoxes),
     writeln(ListOfFoxes),
-    writeln("Enter start hunter position"), read(FirstHunterPosition),
-    game_loop(FieldSize, Foxes, ListOfFoxes, FirstHunterPosition).
-%    repeat,
-       % writeln(ListOfFoxes),
-      %  writeln("Enter hunter position [V, H]"),
-     %   read(HunterPosition), nl,
-    %    remover(HunterPosition, ListOfFoxes, Res),
-   %     Res = ListOfFoxes -> writeln("There is no fox here"),
-  %      fox_iteration(HunterPosition, ListOfFoxes, FieldSize, Answer),
- %       writeln("At vertical, horizontal and diagonal we have so many foxes:"),
-%        writeln(Answer);
-%        ListOfFoxes = Res,
-  %      writeln("Fox Catched"),
-%        (Res = [] ->
-%        writeln("Congratz, all foxes catched"),
-%        fail;
-%        writeln("Lets'go again"), !).
+    game_loop(FieldSize, Foxes, ListOfFoxes).
 
-game_loop(_, _, [], _) :- writeln("Game is over"), !.
+game_loop(_, _, []) :- writeln("Game is over"), !.
 
-game_loop(FieldSize, Foxes, ListOfFoxes, HunterPosition) :-
-    remover(HunterPosition, ListOfFoxes, Result),
-    Result = [] -> game_loop(0, 0, [], 0), !;
+game_loop(FieldSize, Foxes, ListOfFoxes) :-
+    writeln("Enter hunter position"),
+    read(HunterPosition),
+    writeln("At vertical, horizontal and diagonal we have so many foxes:"),
+    fox_iteration(HunterPosition, ListOfFoxes, FieldSize, Answer),
+    writeln(Answer),
     remover(HunterPosition, ListOfFoxes, Result),
     Result \= ListOfFoxes ->
     writeln("Fox Catched"),
     writeln(Result),
-    writeln("Enter hunter position [V, H]"),
-    read(NewHunterPosition),
-    game_loop(FieldSize, Foxes, Result, NewHunterPosition), !;
+    game_loop(FieldSize, Foxes, Result), !;
 
     writeln("There is no fox here"),
-    fox_iteration(HunterPosition, ListOfFoxes, FieldSize, Answer),
-    writeln("At vertical, horizontal and diagonal we have so many foxes:"),
-    writeln(Answer),
-    writeln("Enter hunter position [V, H]"),
-    read(NewHunterPosition),
-    game_loop(FieldSize, Foxes, ListOfFoxes, NewHunterPosition).
+    game_loop(FieldSize, Foxes, ListOfFoxes).
