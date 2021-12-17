@@ -68,14 +68,10 @@ get_head([H|_], H).
 get_tail([_|T], T).
 
 
-fox_here([V, H], [V, H], 1) :- !, writeln("Fox catched"). % returns 1 if fox and hunter in same cell
-fox_here(_, _, 0) :- !, writeln("Fox not catched"). % returns 0 in any other case
-
-
 % Counts foxes at all directions from hunter
 fox_iteration(_, [], _, 0) :- !.
 fox_iteration([V, H], [FirstFox|OtherFoxes], Size, Answer) :- 
-    catching([V,H], FirstFox, Size) -> fox_iteration([V, H], OtherFoxes, Size, NextAnswer), Answer is NextAnswer+1;
+    V > 0, H > 0, V < Size, H < Size, catching([V,H], FirstFox, Size) -> fox_iteration([V, H], OtherFoxes, Size, NextAnswer), Answer is NextAnswer+1;
     fox_iteration([V, H], OtherFoxes, Size, Answer).
 
 % Remove ONLY first appear element
@@ -86,7 +82,7 @@ remover( R, [H|T], [H|T2]) :- H \= R, remover( R, T, T2).
 % Remove all element appears
 %remover( _, [], []).
 %remover( R, [R|T], T2) :- remover( R, T, T2).
-%remover( R, [H|T], [H|T2]) :- H \= R, remover( R, T, T2)
+%remover( R, [H|T], [H|T2]) :- H \= R, remover( R, T, T2).
 
 
 % Here must be predicate to define catched fox
