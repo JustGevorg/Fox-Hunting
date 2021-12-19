@@ -39,7 +39,7 @@ diag_catch_up_left([V, H], [V1, H1], Size) :-
     NewH is H-1,
     NewH > 0,
     NewV > 0,
-    diag_catch_up_right([NewV,NewH], [V1, H1], Size).
+    diag_catch_up_left([NewV,NewH], [V1, H1], Size).
 
 diag_catch_down_right([V, H], [V, H], _) :- !.
 diag_catch_down_right([V, H], [V1, H1], Size) :- 
@@ -55,7 +55,7 @@ diag_catch_down_left([V, H], [V1, H1], Size) :-
     NewH is H-1,
     NewH > 0,
     NewV < Size,
-    diag_catch_down_right([NewV,NewH], [V1, H1], Size).
+    diag_catch_down_left([NewV,NewH], [V1, H1], Size).
 
 % Start searching in all directions
 catching([V, H], [V1, H1], Size) :-
